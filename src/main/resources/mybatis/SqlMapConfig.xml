@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 批量定义别名，将指定包中的类的别名定义为类名 -->
+	<typeAliases>
+		<!-- <package name="com.yll.ssm.entity"/> -->
+		<!-- <typeAlias alias="User" type="com.yll.ssmm.entity.User"/> -->
+	</typeAliases>
+	<!-- 定义单个别名 -->
+    <!-- <typeAliases> 
+        <typeAlias alias="User" type="com.yll.smm.entity.User"/> 
+    </typeAliases>  -->
+    <!-- 配置映射文件:设置了自动扫描mapper配置文件，此处可省去 -->
+    <!-- <mappers>
+    	<mapper resource="sqlmap/UserMapper.xml"/>
+    	<package name="com.yll.ssm.mapping"/>
+    </mappers> -->
+</configuration>   

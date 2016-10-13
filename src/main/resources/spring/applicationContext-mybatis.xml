@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
+       xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+    http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.1.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+    http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd">
+	
+	<!-- 加载属性文件db.properties -->
+	<context:property-placeholder location="classpath:db.properties" ignore-unresolvable="true"/>
+	<!-- 配置数据源  c3p0-->
+   	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${db.driver}" />
+		<property name="jdbcUrl" value="${db.url}" />
+		<property name="user" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+		<property name="initialPoolSize" value="3"/>			<!-- 初始化连接池大小 -->
+		<property name="minPoolSize" value="5"/>				<!-- 连接池中保留最小连接数 -->
+		<property name="maxPoolSize" value="20"/>				<!-- 连接池中保留的最大连接数: 默认是5 -->
+		<property name="maxIdleTime" value="60"/>				<!-- 最大空闲时间,60秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
+		<property name="numHelperThreads" value="6"/>
+		<property name="acquireIncrement" value="6"/>			<!-- 定义在从数据库获取新连接失败后重复尝试的次数 -->
+		<property name="idleConnectionTestPeriod" value="60"/>	<!-- 每60秒检查连接池中的空闲连接 -->
+		<property name="checkoutTimeout" value="30000"/>
+		<property name="testConnectionOnCheckout"  value="false" />	<!-- 关闭每个connection提交的 时候都将校验其有效性 -->
+	</bean>
+	<!-- spring和mybatis整合 -->
+	<!-- 配置SqlSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<!-- 加载mybatis的配置文件 -->
+		<property name="configLocation" value="classpath:mybatis/SqlMapConfig.xml"/>
+		<!-- 自动扫描mapping配置文件 -->
+		<property name="mapperLocations" value="classpath:sqlmap/*.xml" />
+	</bean>
+	
+	<!-- 批量扫描自动生成mapper代理对象 
+		需要遵循规范：mapper.java和mapper.xml文件名同名
+		自动扫描出来的mapper的bean的id为mapper类名(首字母小写)
+		指定扫描的包名，扫描多个用半角逗号分隔
+		 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.yll.ssmm.mapper"></property>
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+
+	<!-- 事务管理1 -->
+	<!-- 定义事务管理器-->
+	<bean id="transactionManager"  class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+        <property name="dataSource" ref="dataSource" />  
+    </bean>
+    <!-- 在dao中需要使用@Transactional注解 -->
+    <!-- <tx:annotation-driven transaction-manager="transactionManager" /> -->
+    
+    <!-- 事务管理2:配置事务增强处理bean-->
+    <!-- <tx:advice id="txAdvice" transaction-manager="transactionManager">
+    	<tx:attributes>
+    		<tx:method name="get*" read-only="true"/>
+    		<tx:method name="*" isolation="DEFAULT" propagation="REQUIRED" timeout="5"/>
+    	</tx:attributes>
+    </tx:advice>
+    <aop:config>
+    	<aop:pointcut id="myPointcut" expression="execution(* com.yll.ssm.service.impl.*.*(..))" />
+    	在指定的切入点应用指定的事务增强
+    	<aop:advisor advice-ref="txAdvice" pointcut-ref="myPointcut"/>
+    </aop:config> -->
+</beans>

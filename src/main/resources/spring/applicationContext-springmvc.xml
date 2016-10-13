@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
+	
+	<!-- 自动扫描控制器 -->
+    <!-- 批量配置注解的处理器：让spring mvc自动扫描指定包类中的@Controller注解-->  
+    <context:component-scan base-package="com.yll.ssmm.controller">
+    	<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+ 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
+    </context:component-scan>
+    <!-- 配置注解的处理器：来自/queryUser的请求都有该处理器处理 -->
+	<!-- <bean name="/queryUser" class="com.yll.ssm.controller.UserControllerAnnotation"/> -->
+	
+    <!-- 配置注解的映射器和适配器 -->
+    <mvc:annotation-driven/>
+    <!-- <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"/> -->
+   
+	<!-- 注解的处理器适配器-->  
+	<!-- <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />  -->
+
+	
+	
+	<!-- 配置处理器映射器 -->
+	<!-- <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/> -->
+	<!-- 配置处理器适配器 -->
+	<!-- <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/> -->
+	<!-- 配置处理器 -->
+	<!-- <bean name="/hello" class="com.yll.ssm.controller.UserController"/> -->
+	<!-- 配置视图解析器 -->
+	<!-- <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	</bean>  -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
+   		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>  
+    	<property name="prefix" value="/views/"/>
+    	<property name="suffix" value=".jsp"/>  
+	</bean> 
+</beans> 
